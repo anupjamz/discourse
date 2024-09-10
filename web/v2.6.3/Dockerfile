@@ -34,7 +34,7 @@ COPY install-nginx.sh /tmp/install-nginx.sh
 RUN /tmp/install-nginx.sh && \
     cp config/nginx.sample.conf /etc/nginx/conf.d/discourse.conf && \
     echo "DISCOURSE_HOSTNAME is: $DISCOURSE_HOSTNAME"
-    sed -i "s/^  server_name enter\.your\.web\.hostname\.here;/  server_name $DISCOURSE_HOSTNAME;/" /etc/nginx/conf.d/discourse.conf && \
+    sed -i "s/^  server_name enter\\.your\\.web\\.hostname\\.here;/  server_name $DISCOURSE_HOSTNAME;/" /etc/nginx/conf.d/discourse.conf && \
     mkdir -p /var/nginx/cache/
 
 # Install Redis
