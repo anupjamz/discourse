@@ -34,12 +34,10 @@ RUN npm install -g svgo
 # Install project dependencies
 WORKDIR $DISCOURSE_ROOT
 
-# Copy Gemfile and install dependencies
-COPY Gemfile ./
-RUN bundle install
+# Create a minimal Gemfile if it doesn't exist
+RUN test -f Gemfile || echo "source 'https://rubygems.org'\ngem 'rails'\ngem 'ostruct'" > Gemfile
 
-# Copy the rest of the application code
-COPY . .
+RUN bundle install
 
 # Install esbuild locally in the Discourse directory
 WORKDIR $DISCOURSE_ROOT
