@@ -3,14 +3,16 @@ FROM ruby:3.3.5
 ARG RENDER_EXTERNAL_HOSTNAME
 ARG CUSTOM_DOMAIN
 ARG DISCOURSE_WORKER_CONCURRENCY
+ARG NODE_MEMORY=2048
+ARG JOBS=2
 
 ENV DISCOURSE_HOSTNAME=${CUSTOM_DOMAIN:-$RENDER_EXTERNAL_HOSTNAME}
 ENV RAILS_ENV=production
 ENV DISCOURSE_VERSION=v3.3.1
 ENV DISCOURSE_ROOT=/var/www/discourse
 ENV DISCOURSE_WORKER_CONCURRENCY=${DISCOURSE_WORKER_CONCURRENCY:-2}
-ENV NODE_OPTIONS=--max_old_space_size=2048
-ENV JOBS=2
+ENV NODE_OPTIONS=--max_old_space_size=${NODE_MEMORY}
+ENV JOBS=${JOBS}
 
 WORKDIR $DISCOURSE_ROOT
 
@@ -33,13 +35,6 @@ RUN apt-get install -y nodejs
 
 # Install Yarn
 RUN npm install -g yarn
-
-# Add swap space
-RUN fallocate -l 4G /swapfile && \
-    chmod 600 /swapfile && \
-    mkswap /swapfile && \
-    swapon /swapfile && \
-    echo '/swapfile none swap sw 0 0' >> /etc/fstab
 
 # Install Discourse dependencies
 WORKDIR $DISCOURSE_ROOT
