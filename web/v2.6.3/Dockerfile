@@ -32,15 +32,16 @@ RUN apt-get install -y nodejs
 # Install Yarn
 RUN npm install -g yarn
 
-# Install esbuild locally in the Discourse directory
-WORKDIR $DISCOURSE_ROOT
-RUN yarn add esbuild
-
 # Install Discourse dependencies
+WORKDIR $DISCOURSE_ROOT
+RUN bundle install
 RUN yarn install
 
-# Add esbuild to PATH
-ENV PATH="${DISCOURSE_ROOT}/node_modules/.bin:${PATH}"
+# Install esbuild globally
+RUN yarn global add esbuild
+
+# Add global yarn bin to PATH
+ENV PATH="/usr/local/share/.config/yarn/global/node_modules/.bin:${PATH}"
 
 # Configure NGINX
 COPY install-nginx.sh /tmp/install-nginx.sh
