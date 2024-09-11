@@ -24,8 +24,14 @@ RUN apt-get update && apt-get install -y \
     gifsicle \
     jhead \
     jpegoptim \
+    nodejs \
+    npm \
+    optipng \
+    pngquant \
     postgresql-client \
     vim
+
+RUN npm install -g svgo
 
 # Install Node.js 18.x
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
@@ -36,7 +42,8 @@ RUN npm install -g yarn
 
 # Install Discourse dependencies
 WORKDIR $DISCOURSE_ROOT
-RUN bundle install
+RUN bundle config set path vendor/bundle/ && bundle install
+RUN gem install foreman
 RUN yarn install
 
 # Install esbuild globally
