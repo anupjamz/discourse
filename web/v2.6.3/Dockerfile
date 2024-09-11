@@ -4,7 +4,6 @@ ARG RENDER_EXTERNAL_HOSTNAME
 ARG CUSTOM_DOMAIN
 ARG DISCOURSE_WORKER_CONCURRENCY
 ARG NODE_MEMORY=2048
-ARG JOBS=2
 
 ENV DISCOURSE_HOSTNAME=${CUSTOM_DOMAIN:-$RENDER_EXTERNAL_HOSTNAME}
 ENV RAILS_ENV=production
@@ -12,7 +11,6 @@ ENV DISCOURSE_VERSION=v3.3.1
 ENV DISCOURSE_ROOT=/var/www/discourse
 ENV DISCOURSE_WORKER_CONCURRENCY=${DISCOURSE_WORKER_CONCURRENCY:-2}
 ENV NODE_OPTIONS=--max_old_space_size=${NODE_MEMORY}
-ENV JOBS=${JOBS}
 
 WORKDIR $DISCOURSE_ROOT
 
@@ -46,9 +44,6 @@ RUN yarn global add esbuild
 
 # Add global yarn bin to PATH
 ENV PATH="/usr/local/share/.config/yarn/global/node_modules/.bin:${PATH}"
-
-# Prepare database.yml
-RUN cp config/database.yml.sample config/database.yml
 
 # Build assets with verbose output
 RUN RAILS_ENV=production bundle exec rake assets:precompile --trace
