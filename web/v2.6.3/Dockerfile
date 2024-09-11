@@ -9,6 +9,8 @@ ENV RAILS_ENV=production
 ENV DISCOURSE_VERSION=v3.3.1
 ENV DISCOURSE_ROOT=/var/www/discourse
 ENV DISCOURSE_WORKER_CONCURRENCY=${DISCOURSE_WORKER_CONCURRENCY:-2}
+ENV NODE_OPTIONS=--max_old_space_size=2048
+ENV JOBS=2
 
 WORKDIR $DISCOURSE_ROOT
 
@@ -32,6 +34,13 @@ RUN apt-get install -y nodejs
 # Install Yarn
 RUN npm install -g yarn
 
+# Add swap space
+RUN fallocate -l 4G /swapfile && \
+    chmod 600 /swapfile && \
+    mkswap /swapfile && \
+    swapon /swapfile && \
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
 # Install Discourse dependencies
 WORKDIR $DISCOURSE_ROOT
 RUN bundle install
@@ -42,6 +51,9 @@ RUN yarn global add esbuild
 
 # Add global yarn bin to PATH
 ENV PATH="/usr/local/share/.config/yarn/global/node_modules/.bin:${PATH}"
+
+# Build assets
+RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 # Configure NGINX
 COPY install-nginx.sh /tmp/install-nginx.sh
