@@ -1,4 +1,4 @@
-FROM ruby:3.1.0
+FROM ruby:3.3.5
 
 ARG RENDER_EXTERNAL_HOSTNAME
 ARG CUSTOM_DOMAIN
@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     vim
 
 # Install Node.js 14.x
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 RUN npm install -g svgo
