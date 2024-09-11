@@ -34,9 +34,12 @@ RUN npm install -g svgo
 # Install project dependencies
 WORKDIR $DISCOURSE_ROOT
 
-COPY Gemfile Gemfile.lock ./
-RUN bundle config set path vendor/bundle/ && bundle install
-RUN gem install foreman
+# Copy Gemfile and install dependencies
+COPY Gemfile ./
+RUN bundle install
+
+# Copy the rest of the application code
+COPY . .
 
 # Install esbuild locally in the Discourse directory
 WORKDIR $DISCOURSE_ROOT
