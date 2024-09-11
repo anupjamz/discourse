@@ -32,11 +32,18 @@ RUN apt-get install -y nodejs
 RUN npm install -g svgo
 
 # Install project dependencies
+WORKDIR $DISCOURSE_ROOT
+
+COPY Gemfile Gemfile.lock ./
 RUN bundle config set path vendor/bundle/ && bundle install
 RUN gem install foreman
 
-# Install esbuild
-RUN npm install -g esbuild
+# Install esbuild locally in the Discourse directory
+WORKDIR $DISCOURSE_ROOT
+RUN npm init -y && npm install esbuild
+
+# Add esbuild to PATH
+ENV PATH="${DISCOURSE_ROOT}/node_modules/.bin:${PATH}"
 
 # Configure NGINX
 COPY install-nginx.sh /tmp/install-nginx.sh
