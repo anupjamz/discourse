@@ -25,14 +25,18 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     vim
 
-# Install Node.js 14.x
+# Install Node.js 20.x
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 RUN npm install -g svgo
 
+# Install project dependencies
 RUN bundle config set path vendor/bundle/ && bundle install
 RUN gem install foreman
+
+# Install esbuild
+RUN npm install -g esbuild
 
 # Configure NGINX
 COPY install-nginx.sh /tmp/install-nginx.sh
