@@ -25,26 +25,19 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     vim
 
-# Install Node.js 16.x
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+# Install Node.js 18.x
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
-RUN npm install -g svgo
-
-# Install project dependencies
-WORKDIR $DISCOURSE_ROOT
-
-# Create a minimal Gemfile if it doesn't exist
-RUN test -f Gemfile || echo "source 'https://rubygems.org'\ngem 'rails'\ngem 'ostruct'" > Gemfile
-
-RUN bundle install
+# Install Yarn
+RUN npm install -g yarn
 
 # Install esbuild locally in the Discourse directory
 WORKDIR $DISCOURSE_ROOT
-RUN npm init -y && npm install esbuild --legacy-peer-deps
+RUN yarn add esbuild
 
 # Install Discourse dependencies
-RUN npm ci --legacy-peer-deps
+RUN yarn install
 
 # Add esbuild to PATH
 ENV PATH="${DISCOURSE_ROOT}/node_modules/.bin:${PATH}"
