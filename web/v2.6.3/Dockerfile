@@ -22,13 +22,15 @@ RUN apt-get update && apt-get install -y \
     gifsicle \
     jhead \
     jpegoptim \
-    nodejs \
-    npm \
-    optipng \
-    pngquant \
     postgresql-client \
     vim
+
+# Install Node.js 14.x
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
+
 RUN npm install -g svgo
+
 RUN bundle config set path vendor/bundle/ && bundle install
 RUN gem install foreman
 
