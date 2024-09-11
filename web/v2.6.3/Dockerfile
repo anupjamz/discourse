@@ -47,8 +47,11 @@ RUN yarn global add esbuild
 # Add global yarn bin to PATH
 ENV PATH="/usr/local/share/.config/yarn/global/node_modules/.bin:${PATH}"
 
-# Build assets
-RUN RAILS_ENV=production bundle exec rake assets:precompile
+# Prepare database.yml
+RUN cp config/database.yml.sample config/database.yml
+
+# Build assets with verbose output
+RUN RAILS_ENV=production bundle exec rake assets:precompile --trace
 
 # Configure NGINX
 COPY install-nginx.sh /tmp/install-nginx.sh
