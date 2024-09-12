@@ -46,8 +46,16 @@ RUN bundle config set path vendor/bundle/ && bundle install
 RUN gem install foreman
 RUN yarn install
 
-# Configure Uglifier to use harmony mode
-RUN sed -i "s/config.assets.js_compressor = :uglifier/config.assets.js_compressor = Uglifier.new(harmony: true)/" config/environments/production.rb
+# Add terser and ostruct gems
+RUN echo "gem 'terser'" >> Gemfile
+RUN echo "gem 'ostruct'" >> Gemfile
+RUN bundle install
+
+# Configure terser as the JavaScript compressor
+RUN sed -i "s/config.assets.js_compressor = :uglifier/config.assets.js_compressor = :terser/" config/environments/production.rb
+
+# Precompile assets
+RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 # Install esbuild globally
 RUN yarn global add esbuild
