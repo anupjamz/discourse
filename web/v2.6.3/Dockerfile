@@ -46,6 +46,9 @@ RUN bundle config set path vendor/bundle/ && bundle install
 RUN gem install foreman
 RUN yarn install
 
+# Configure Uglifier to use harmony mode
+RUN sed -i "s/config.assets.js_compressor = :uglifier/config.assets.js_compressor = Uglifier.new(harmony: true)/" config/environments/production.rb
+
 # Install esbuild globally
 RUN yarn global add esbuild
 
