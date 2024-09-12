@@ -54,8 +54,9 @@ RUN bundle install
 # Configure terser as the JavaScript compressor
 RUN sed -i "s/config.assets.js_compressor = :uglifier/config.assets.js_compressor = :terser/" config/environments/production.rb
 
-# Precompile assets
-RUN RAILS_ENV=production bundle exec rake assets:precompile
+# Precompile assets with verbose output
+RUN RAILS_ENV=production bundle exec rake assets:clean --trace
+RUN RAILS_ENV=production bundle exec rake assets:precompile --trace
 
 # Install esbuild globally
 RUN yarn global add esbuild
